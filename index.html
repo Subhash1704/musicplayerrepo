@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Music Player with Artists & Album Art</title>
+  <style>
+    body {
+      background: linear-gradient(to right, #00c6ff, #0072ff);
+      color: #fff;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 50px;
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
+    .album-cover {
+      width: 200px;
+      height: 200px;
+      border-radius: 20px;
+      object-fit: cover;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+    }
+    audio {
+      display: none;
+    }
+    .controls {
+      margin-top: 30px;
+    }
+    button {
+      background: #fff;
+      border: none;
+      padding: 10px 20px;
+      margin: 0 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 16px;
+      color: #0072ff;
+      transition: background 0.3s, color 0.3s;
+    }
+    button:hover {
+      background: #0072ff;
+      color: #fff;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+      margin-top: 30px;
+    }
+    li {
+      margin: 10px 0;
+      cursor: pointer;
+    }
+    li.active {
+      font-weight: bold;
+      text-decoration: underline;
+    }
+    .song-info {
+      margin-top: 20px;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🎶 My Music Player 🎶</h1>
+
+  <!-- Album Cover Image -->
+  <img id="album-cover" class="album-cover" src="default.jpg" alt="Album Cover">
+
+  <audio id="audio" controls></audio>
+
+  <div class="song-info" id="song-info">Now Playing: </div>
+
+  <ul id="playlist">
+    <!-- Songs will be listed here dynamically -->
+  </ul>
+
+  <div class="controls">
+    <button onclick="prevSong()">⏮ Previous</button>
+    <button onclick="togglePlay()">▶️ Play/Pause</button>
+    <button onclick="nextSong()">⏭ Next</button>
+  </div>
+
+  <script>
+    const playlist = [
+      { title: 'They Dont Really Care', artist: 'Michael Jackson ft Iniko', file: 'They dont really care.mp3.mp3', image: 'They dont really care.jpg.jpg' },
+      { title: 'Gangsta paradise', artist: 'Coolio', file: 'Gangsta paradise.mp3.mp3', image: 'Gangsta paradise.jpg.jpg' },
+      { title: 'Cheap song', artist: ' B. Ajaneesh Loknath', file: 'Cheap.mp3.mp3', image: 'Cheap.jpg.jpg' },
+      { title: 'Matushka UltraFunk', artist: ' FUNK DEMON, EVO', file: 'Matushka UltraFunk.mp3.mp3', image: 'Matushka UltraFunk.jpg.jpg' },
+      { title: 'Maximum Mass', artist: ' B. Ajaneesh Loknath', file: 'Maximu Mass.mp3.mp3', image: 'Maximu Mass.jpg.jpg' },
+      { title: 'SALVA FUNK', artist: ' MYSTERIOUS, EVO, hxmr', file: 'Salva Funk.mp3.mp3', image: 'Salva Funk.jpg.jpg' },
+      { title: 'PASSO BEM SLOTO', artist: 'ATLXS', file: 'Passo Bem Sloto.mp3.mp3', image: 'Passo Bem Sloto.jpg.jpg' }
+    ];
+
+    let currentSong = 0;
+    const audio = document.getElementById('audio');
+    const albumCover = document.getElementById('album-cover');
+    const playlistContainer = document.getElementById('playlist');
+    const songInfo = document.getElementById('song-info');
+
+    // Dynamically create playlist
+    playlist.forEach((track, index) => {
+      const li = document.createElement('li');
+      li.textContent = `${track.title} - ${track.artist}`;
+      li.onclick = () => playSong(index);
+      playlistContainer.appendChild(li);
+    });
+
+    const playlistElements = playlistContainer.children;
+
+    function loadSong(index) {
+      audio.src = playlist[index].file;
+      albumCover.src = playlist[index].image;
+      songInfo.textContent = `Now Playing: ${playlist[index].title} - ${playlist[index].artist}`;
+      highlightSong(index);
+    }
+
+    function playSong(index) {
+      currentSong = index;
+      loadSong(currentSong);
+      audio.play();
+    }
+
+    function nextSong() {
+      currentSong = (currentSong + 1) % playlist.length;
+      loadSong(currentSong);
+      audio.play();
+    }
+
+    function prevSong() {
+      currentSong = (currentSong - 1 + playlist.length) % playlist.length;
+      loadSong(currentSong);
+      audio.play();
+    }
+
+    function togglePlay() {
+      if (audio.paused) {
+        audio.play();
+      } else {
+        audio.pause();
+      }
+    }
+
+    function highlightSong(index) {
+      for (let i = 0; i < playlistElements.length; i++) {
+        playlistElements[i].classList.remove('active');
+      }
+      playlistElements[index].classList.add('active');
+    }
+
+    audio.addEventListener('ended', nextSong);
+
+    loadSong(currentSong); // Load the first song initially
+  </script>
+
+</body>
+</html>
